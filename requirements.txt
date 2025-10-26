@@ -1,0 +1,9 @@
+fastapi==0.115.0
+uvicorn==0.30.3
+sqlmodel==0.0.22
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
+
+# (Optional but useful for development)
+black==24.8.0
+isort==5.

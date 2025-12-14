@@ -28,7 +28,7 @@ app = FastAPI(title="Hello World API", version="1.0.0", lifespan=lifespan)
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000/", "https://ds-ocr-bank.vercel.app/"],
+    allow_origins=["http://localhost:3000/", "https://ds-ocr-bank.vercel.app/", "https://ds-ocr-project.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

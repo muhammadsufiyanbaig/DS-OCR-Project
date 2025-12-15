@@ -8,9 +8,25 @@ from utils.validations import generate_account_number, generate_iban
 
 def create_account_application(application_create: AccountApplicationCreate, session: Session) -> AccountApplication:
     """Create a new account application using model SQL query"""
+    print("API called with data:", application_create.model_dump())
     try:
+        # Get data and convert enums to their string values
+        data = application_create.model_dump()
+        
+        # Convert enum fields to string values
+        if data.get('marital_status'):
+            data['marital_status'] = data['marital_status'].value if hasattr(data['marital_status'], 'value') else data['marital_status']
+        if data.get('gender'):
+            data['gender'] = data['gender'].value if hasattr(data['gender'], 'value') else data['gender']
+        if data.get('occupation'):
+            data['occupation'] = data['occupation'].value if hasattr(data['occupation'], 'value') else data['occupation']
+        if data.get('residential_status'):
+            data['residential_status'] = data['residential_status'].value if hasattr(data['residential_status'], 'value') else data['residential_status']
+        if data.get('account_type'):
+            data['account_type'] = data['account_type'].value if hasattr(data['account_type'], 'value') else data['account_type']
+        
         # Convert to full AccountApplication model
-        application_data = AccountApplication(**application_create.model_dump())
+        application_data = AccountApplication(**data)
 
         # Generate account number and IBAN
         application_data.account_no = generate_account_number()

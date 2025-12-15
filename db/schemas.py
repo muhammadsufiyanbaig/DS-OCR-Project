@@ -1,6 +1,7 @@
 from sqlmodel import Field, SQLModel, Session, select
 from typing import Optional, List
-from enum import Enum
+from enum import Enum as PyEnum
+from sqlalchemy import Enum
 from datetime import date
 from pydantic import field_validator, model_validator, ValidationError
 import re
@@ -15,26 +16,26 @@ from utils.validations import (
 )
 
 
-class AccountType(Enum):
+class AccountType(PyEnum):
     CURRENT = "CURRENT"
     SAVINGS = "SAVINGS"
     AHU_LAT = "AHU_LAT"
 
 
-class MaritalStatus(Enum):
+class MaritalStatus(PyEnum):
     SINGLE = "SINGLE"
     MARRIED = "MARRIED"
     DIVORCED = "DIVORCED"
     WIDOWED = "WIDOWED"
 
 
-class Gender(Enum):
+class Gender(PyEnum):
     MALE = "MALE"
     FEMALE = "FEMALE"
     OTHER = "OTHER"
 
 
-class Occupation(Enum):
+class Occupation(PyEnum):
     SERVICE_GOVT = "SERVICE_GOVT"
     SERVICE_PRIVATE = "SERVICE_PRIVATE"
     FARMER = "FARMER"
@@ -43,7 +44,7 @@ class Occupation(Enum):
     OTHER = "OTHER"
 
 
-class ResidentialStatus(Enum):
+class ResidentialStatus(PyEnum):
     HOUSE_OWNED = "HOUSE_OWNED"
     RENTAL = "RENTAL"
     FAMILY = "FAMILY"
@@ -59,7 +60,7 @@ class AccountApplication(SQLModel, table=True):
     branch_city: Optional[str] = None
     branch_code: Optional[str] = None
     sbp_code: Optional[str] = None
-    account_type: Optional[AccountType] = None
+    account_type: Optional[str] = None  # Stored as string: CURRENT, SAVINGS, AHU_LAT
     title_of_account: str  # Required, in block letters
     name_on_card: Optional[str] = None
 
@@ -67,8 +68,8 @@ class AccountApplication(SQLModel, table=True):
     name: str  # As per CNIC, in block letters
     fathers_husbands_name: Optional[str] = None
     mothers_name: Optional[str] = None
-    marital_status: Optional[MaritalStatus] = None
-    gender: Optional[Gender] = None
+    marital_status: Optional[str] = None  # Stored as string: SINGLE, MARRIED, DIVORCED, WIDOWED
+    gender: Optional[str] = None  # Stored as string: MALE, FEMALE, OTHER
     nationality: Optional[str] = None
     place_of_birth: Optional[str] = None
     date_of_birth: Optional[str] = None
@@ -82,7 +83,7 @@ class AccountApplication(SQLModel, table=True):
     postal_code: Optional[str] = None
 
     # Occupation
-    occupation: Optional[Occupation] = None
+    occupation: Optional[str] = None  # Stored as string: SERVICE_GOVT, SERVICE_PRIVATE, FARMER, HOUSE_WIFE, STUDENT, OTHER
     occupation_other: Optional[str] = None  # For OTHER occupation
 
     # Financial Info
@@ -92,7 +93,7 @@ class AccountApplication(SQLModel, table=True):
     expected_monthly_turnover_cr: Optional[float] = None  # In Rs (M)
 
     # Residential Status
-    residential_status: Optional[ResidentialStatus] = None
+    residential_status: Optional[str] = None  # Stored as string: HOUSE_OWNED, RENTAL, FAMILY, OTHER
     residential_status_other: Optional[str] = None  # For OTHER
     residing_since: Optional[str] = None  # Could be date or string
 

@@ -1,6 +1,7 @@
 from sqlmodel import Field, SQLModel, Session, select
 from typing import Optional, List
-from enum import Enum
+from enum import Enum as PyEnum
+from sqlalchemy import Enum
 from datetime import date
 from pydantic import field_validator, ValidationError, model_validator
 import re
@@ -17,26 +18,26 @@ from utils.validations import (
 )
 
 
-class AccountType(Enum):
+class AccountType(PyEnum):
     CURRENT = "CURRENT"
     SAVINGS = "SAVINGS"
     AHU_LAT = "AHU_LAT"
 
 
-class MaritalStatus(Enum):
+class MaritalStatus(PyEnum):
     SINGLE = "SINGLE"
     MARRIED = "MARRIED"
     DIVORCED = "DIVORCED"
     WIDOWED = "WIDOWED"
 
 
-class Gender(Enum):
+class Gender(PyEnum):
     MALE = "MALE"
     FEMALE = "FEMALE"
     OTHER = "OTHER"
 
 
-class Occupation(Enum):
+class Occupation(PyEnum):
     SERVICE_GOVT = "SERVICE_GOVT"
     SERVICE_PRIVATE = "SERVICE_PRIVATE"
     FARMER = "FARMER"
@@ -45,7 +46,7 @@ class Occupation(Enum):
     OTHER = "OTHER"
 
 
-class ResidentialStatus(Enum):
+class ResidentialStatus(PyEnum):
     HOUSE_OWNED = "HOUSE_OWNED"
     RENTAL = "RENTAL"
     FAMILY = "FAMILY"

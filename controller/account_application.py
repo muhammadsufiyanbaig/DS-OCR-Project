@@ -24,6 +24,10 @@ def create_account_application(application_create: AccountApplicationCreate, ses
             data['residential_status'] = data['residential_status'].value if hasattr(data['residential_status'], 'value') else data['residential_status']
         if data.get('account_type'):
             data['account_type'] = data['account_type'].value if hasattr(data['account_type'], 'value') else data['account_type']
+        if data.get('card_type'):
+            data['card_type'] = data['card_type'].value if hasattr(data['card_type'], 'value') else data['card_type']
+        if data.get('card_network'):
+            data['card_network'] = data['card_network'].value if hasattr(data['card_network'], 'value') else data['card_network']
         
         # Convert to full AccountApplication model
         application_data = AccountApplication(**data)

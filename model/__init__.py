@@ -6,6 +6,8 @@ from .account_application import (
     Gender,
     Occupation,
     ResidentialStatus,
+    CardType,
+    CardNetwork,
     Item
 )
 
@@ -16,5 +18,7 @@ __all__ = [
     "Gender",
     "Occupation",
     "ResidentialStatus",
+    "CardType",
+    "CardNetwork",
     "Item"
 ]

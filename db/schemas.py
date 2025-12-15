@@ -38,10 +38,35 @@ class Gender(PyEnum):
 class Occupation(PyEnum):
     SERVICE_GOVT = "SERVICE_GOVT"
     SERVICE_PRIVATE = "SERVICE_PRIVATE"
+    BUSINESS = "BUSINESS"
+    SELF_EMPLOYED = "SELF_EMPLOYED"
     FARMER = "FARMER"
     HOUSE_WIFE = "HOUSE_WIFE"
     STUDENT = "STUDENT"
+    RETIRED = "RETIRED"
+    DOCTOR = "DOCTOR"
+    ENGINEER = "ENGINEER"
+    TEACHER = "TEACHER"
+    LAWYER = "LAWYER"
+    ACCOUNTANT = "ACCOUNTANT"
+    IT_PROFESSIONAL = "IT_PROFESSIONAL"
+    BANKER = "BANKER"
+    UNEMPLOYED = "UNEMPLOYED"
     OTHER = "OTHER"
+
+
+class CardType(PyEnum):
+    CLASSIC = "CLASSIC"
+    GOLD = "GOLD"
+    TITANIUM = "TITANIUM"
+    PLATINUM = "PLATINUM"
+    SIGNATURE = "SIGNATURE"
+    INFINITE = "INFINITE"
+
+
+class CardNetwork(PyEnum):
+    VISA = "VISA"
+    MASTERCARD = "MASTERCARD"
 
 
 class ResidentialStatus(PyEnum):
@@ -97,7 +122,8 @@ class AccountApplication(SQLModel, table=True):
     residential_status_other: Optional[str] = None  # For OTHER
     residing_since: Optional[str] = None  # Could be date or string
 
-    # Next of Kin
+    # Next of Kin - Optional section
+    has_next_of_kin: bool = Field(default=False)  # Flag to indicate if kin info is provided
     next_of_kin_name: Optional[str] = None
     next_of_kin_relation: Optional[str] = None  # S,W,D/O
     next_of_kin_cnic: Optional[str] = None
@@ -112,9 +138,9 @@ class AccountApplication(SQLModel, table=True):
     check_book: bool = Field(default=False)
     sms_alerts: bool = Field(default=False)
 
-    # Card Type
-    card_type_gold: bool = Field(default=False)
-    card_type_classic: bool = Field(default=False)
+    # Card Selection - User chooses ONE card type and network
+    card_type: Optional[str] = None  # CLASSIC, GOLD, TITANIUM, PLATINUM, SIGNATURE, INFINITE
+    card_network: Optional[str] = None  # VISA or MASTERCARD
 
     # Zakat Deduction
     zakat_deduction: bool = Field(default=False)
@@ -156,25 +182,15 @@ class AccountApplication(SQLModel, table=True):
 
     @model_validator(mode='after')
     def validate_next_of_kin_info(self) -> 'AccountApplication':
-        """Validate that if any next of kin info is provided, essential fields are required"""
-        has_any_kin_info = (
-            self.next_of_kin_name or
-            self.next_of_kin_relation or
-            self.next_of_kin_cnic or
-            self.next_of_kin_relationship or
-            self.next_of_kin_contact_no or
-            self.next_of_kin_address or
-            self.next_of_kin_email
-        )
-
-        if has_any_kin_info:
-            # If any kin info is provided, require essential fields
+        """Validate that if has_next_of_kin is True, essential fields are required"""
+        if self.has_next_of_kin:
+            # If kin info is requested, require essential fields
             if not self.next_of_kin_name:
-                raise ValueError("Next of kin name is required when providing next of kin information")
+                raise ValueError("Next of kin name is required when has_next_of_kin is True")
             if not self.next_of_kin_relation:
-                raise ValueError("Next of kin relation is required when providing next of kin information")
+                raise ValueError("Next of kin relation is required when has_next_of_kin is True")
             if not self.next_of_kin_cnic:
-                raise ValueError("Next of kin CNIC is required when providing next of kin information")
+                raise ValueError("Next of kin CNIC is required when has_next_of_kin is True")
 
         return self
 

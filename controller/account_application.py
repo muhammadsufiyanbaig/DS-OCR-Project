@@ -8,14 +8,20 @@ from utils.validations import generate_account_number, generate_iban
 
 def create_account_application(application_create: AccountApplicationCreate, session: Session) -> AccountApplication:
     """Create a new account application using model SQL query"""
-    # Convert to full AccountApplication model
-    application_data = AccountApplication(**application_create.model_dump())
+    try:
+        # Convert to full AccountApplication model
+        application_data = AccountApplication(**application_create.model_dump())
 
-    # Generate account number and IBAN
-    application_data.account_no = generate_account_number()
-    application_data.iban = generate_iban()
+        # Generate account number and IBAN
+        application_data.account_no = generate_account_number()
+        application_data.iban = generate_iban()
 
-    return AccountApplication.create(session, application_data)
+        return AccountApplication.create(session, application_data)
+    except Exception as e:
+        print(f"Error creating application: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
 
 
 def get_account_applications(session: Session) -> List[AccountApplication]:

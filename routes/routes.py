@@ -49,22 +49,17 @@ def read_applications(session: Session = Depends(get_session)):
     return get_account_applications(session)
 
 
-@router.get("/account-applications/{application_id}", response_model=AccountApplication)
-def read_application(application_id: int, session: Session = Depends(get_session)):
-    """Read a specific account application by ID"""
-    return get_account_application_by_id(application_id, session)
+@router.get("/account-applications/count")
+def get_applications_count(session: Session = Depends(get_session)):
+    """Get total count of account applications"""
+    count = get_total_applications_count(session)
+    return {"total_applications": count}
 
 
-@router.put("/account-applications/{application_id}", response_model=AccountApplication)
-def update_application(application_id: int, updated_application: AccountApplication, session: Session = Depends(get_session)):
-    """Update an existing account application"""
-    return update_account_application(application_id, updated_application, session)
-
-
-@router.delete("/account-applications/{application_id}")
-def delete_application(application_id: int, session: Session = Depends(get_session)):
-    """Delete an account application by ID"""
-    return delete_account_application(application_id, session)
+@router.get("/account-applications/paginated", response_model=list[AccountApplication])
+def get_paginated(skip: int = 0, limit: int = 10, session: Session = Depends(get_session)):
+    """Get paginated account applications"""
+    return get_paginated_applications(skip, limit, session)
 
 
 @router.get("/account-applications/search/cnic/{cnic_no}", response_model=AccountApplication)
@@ -88,19 +83,6 @@ def search_by_city(city: str, session: Session = Depends(get_session)):
     return get_applications_by_city(city, session)
 
 
-@router.get("/account-applications/count")
-def get_applications_count(session: Session = Depends(get_session)):
-    """Get total count of account applications"""
-    count = get_total_applications_count(session)
-    return {"total_applications": count}
-
-
-@router.get("/account-applications/paginated", response_model=list[AccountApplication])
-def get_paginated(skip: int = 0, limit: int = 10, session: Session = Depends(get_session)):
-    """Get paginated account applications"""
-    return get_paginated_applications(skip, limit, session)
-
-
 @router.get("/account-applications/search/account-number/{account_no}", response_model=AccountApplication)
 def search_by_account_number(account_no: str, session: Session = Depends(get_session)):
     """Search account application by account number"""
@@ -117,5 +99,23 @@ def search_by_iban(iban: str, session: Session = Depends(get_session)):
     if not application:
         raise HTTPException(status_code=404, detail="Account application not found")
     return application
+
+
+@router.get("/account-applications/{application_id}", response_model=AccountApplication)
+def read_application(application_id: int, session: Session = Depends(get_session)):
+    """Read a specific account application by ID"""
+    return get_account_application_by_id(application_id, session)
+
+
+@router.put("/account-applications/{application_id}", response_model=AccountApplication)
+def update_application(application_id: int, updated_application: AccountApplication, session: Session = Depends(get_session)):
+    """Update an existing account application"""
+    return update_account_application(application_id, updated_application, session)
+
+
+@router.delete("/account-applications/{application_id}")
+def delete_application(application_id: int, session: Session = Depends(get_session)):
+    """Delete an account application by ID"""
+    return delete_account_application(application_id, session)
 
 
